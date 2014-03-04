@@ -28,7 +28,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "addressable"
 
   # Virtus: declare attributes on plain Ruby objects.
-  gem.add_runtime_dependency "virtus", "~> 0.5.3"
+  gem.add_runtime_dependency "virtus", "~> 1"
 
   ##
   # Development dependencies.
