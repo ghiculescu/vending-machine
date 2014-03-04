@@ -2,7 +2,7 @@ require 'virtus'
 
 module Vend
   class Resource
-    include Virtus
+    include Virtus.model
 
     attr_accessor :store
 
@@ -11,13 +11,13 @@ module Vend
     alias_method :initialize_virtus, :initialize
     def initialize attributes={}
       current_attribute_set = attribute_set
-      self.extend(Virtus)
+      self.extend(Virtus.model)
       attribute_set.merge(current_attribute_set)
       initialize_virtus attributes
     end
 
-    alias_method :set_attributes_virtus, :set_attributes
-    def set_attributes(attributes)
+    alias_method :set_attributes_virtus, :attributes=
+    def attributes=(attributes)
       public_method_names = public_methods.map(&:to_s)
 
       unknown_attributes = attributes.
@@ -26,7 +26,7 @@ module Vend
 
       if unknown_attributes.size > 0
         dates = %w{ created_at deleted_at updated_at }
-        self.extend Virtus unless self.respond_to?(:attribute)
+        self.extend Virtus.model unless self.respond_to?(:attribute)
         unknown_attributes.
           each do |k,v|
             case
@@ -75,15 +75,12 @@ module Vend
 
   end
   module Attributes
-    class CSV < Virtus::Attribute::Object
-      primitive Array
-
+    class CSV < Virtus::Attribute
       def coerce(value)
-        require 'csv'
         ::CSV.parse(value).first
       end
     end
-    class Boolean < Virtus::Attribute::Object
+    class Boolean < Virtus::Attribute
       primitive Boolean
 
       def coerce(value)
